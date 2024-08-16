@@ -108,59 +108,8 @@
                     <view key="view" contentMode="scaleToFill" id="GaL-bk-j83">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avatar" translatesAutoresizingMaskIntoConstraints="NO" id="4BM-YG-anp" userLabel="Avatar">
-                                <rect key="frame" x="16" y="91" width="70" height="70"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="4BM-YG-anp" secondAttribute="height" multiplier="1:1" id="3ey-m6-Go8"/>
-                                    <constraint firstAttribute="width" constant="70" id="TU0-2I-q6o"/>
-                                </constraints>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Екатерина Новикова" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2g4-6l-GRM" userLabel="Name">
-                                <rect key="frame" x="16" y="169" width="361" height="27.666666666666657"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="23"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@ekaterina_nov" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vEY-GT-oIG" userLabel="Login">
-                                <rect key="frame" x="16" y="204.66666666666666" width="361" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.68235294117647061" green="0.68627450980392157" blue="0.70588235294117641" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uUu-Dw-1wz" userLabel="Logout Button">
-                                <rect key="frame" x="333" y="104" width="44" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="0uu-gd-Bnc"/>
-                                    <constraint firstAttribute="width" constant="44" id="Z5z-GR-d4g"/>
-                                </constraints>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" image="logout"/>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello, world!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zfF-w3-Uy8" userLabel="Desctiption Label">
-                                <rect key="frame" x="16" y="233.66666666666666" width="361" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="x0g-SZ-8ll"/>
                         <color key="backgroundColor" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="zfF-w3-Uy8" firstAttribute="top" secondItem="vEY-GT-oIG" secondAttribute="bottom" constant="8" id="2BC-Ma-X2d"/>
-                            <constraint firstItem="2g4-6l-GRM" firstAttribute="leading" secondItem="4BM-YG-anp" secondAttribute="leading" id="6td-79-HTw"/>
-                            <constraint firstItem="uUu-Dw-1wz" firstAttribute="centerY" secondItem="4BM-YG-anp" secondAttribute="centerY" id="EcK-qo-KB1"/>
-                            <constraint firstItem="vEY-GT-oIG" firstAttribute="leading" secondItem="2g4-6l-GRM" secondAttribute="leading" id="KVt-Za-J3Z"/>
-                            <constraint firstItem="4BM-YG-anp" firstAttribute="leading" secondItem="x0g-SZ-8ll" secondAttribute="leading" constant="16" id="LoI-Ou-7Yn"/>
-                            <constraint firstItem="vEY-GT-oIG" firstAttribute="top" secondItem="2g4-6l-GRM" secondAttribute="bottom" constant="8" id="VFh-O2-eYz"/>
-                            <constraint firstItem="4BM-YG-anp" firstAttribute="top" secondItem="x0g-SZ-8ll" secondAttribute="top" constant="32" id="aNg-jj-55i"/>
-                            <constraint firstItem="x0g-SZ-8ll" firstAttribute="right" secondItem="uUu-Dw-1wz" secondAttribute="right" constant="16" id="cvS-Sz-KVb"/>
-                            <constraint firstItem="zfF-w3-Uy8" firstAttribute="leading" secondItem="2g4-6l-GRM" secondAttribute="leading" id="e7p-oG-mMd"/>
-                            <constraint firstItem="x0g-SZ-8ll" firstAttribute="trailing" secondItem="2g4-6l-GRM" secondAttribute="trailing" constant="16" id="ets-et-4Lx"/>
-                            <constraint firstItem="2g4-6l-GRM" firstAttribute="top" secondItem="4BM-YG-anp" secondAttribute="bottom" constant="8" id="fU5-KU-0lS"/>
-                            <constraint firstItem="vEY-GT-oIG" firstAttribute="trailing" secondItem="2g4-6l-GRM" secondAttribute="trailing" id="gSw-ni-a84"/>
-                            <constraint firstItem="zfF-w3-Uy8" firstAttribute="trailing" secondItem="2g4-6l-GRM" secondAttribute="trailing" id="tao-8d-71B"/>
-                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="" image="tab_profile_active" id="yKc-96-8mb"/>
                 </viewController>
@@ -271,10 +220,8 @@
     <resources>
         <image name="0" width="1600" height="1059"/>
         <image name="Sharing" width="50" height="50"/>
-        <image name="avatar" width="70" height="70"/>
         <image name="back_button" width="24" height="24"/>
         <image name="like" width="42" height="42"/>
-        <image name="logout" width="24" height="24"/>
         <image name="tab_editorial_active" width="30.333333969116211" height="30"/>
         <image name="tab_profile_active" width="30.333333969116211" height="30"/>
     </resources>

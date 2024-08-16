@@ -8,6 +8,7 @@
 import UIKit
 
 final class SingleImageViewController: UIViewController {
+    
     var image: UIImage? {
         didSet {
             guard isViewLoaded, let image else { return }
@@ -35,7 +36,7 @@ final class SingleImageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func didTapShareButton(_ sender: UIButton) {
+    @IBAction private func didTapShareButton(_ sender: UIButton) {
         guard let image else { return }
         let share = UIActivityViewController(
             activityItems: [image],
