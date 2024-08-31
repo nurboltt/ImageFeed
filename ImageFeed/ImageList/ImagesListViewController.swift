@@ -8,8 +8,10 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController {
-
+    
     @IBOutlet private var tableView: UITableView!
+    
+    // MARK:  - Private Properties
     
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
@@ -46,24 +48,7 @@ final class ImagesListViewController: UIViewController {
     }
 }
 
-extension ImagesListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
-        
-        guard let imagesListCell = cell as? ImagesListCell else {
-            return UITableViewCell()
-        }
-        
-        configCell(for: imagesListCell, with: indexPath)
-        
-        return imagesListCell
-    }
-    
-}
+// MARK: Extension - ImagesListViewController
 
 private extension ImagesListViewController {
     
@@ -81,11 +66,32 @@ private extension ImagesListViewController {
     }
 }
 
+// MARK: - UITableViewDataSource
+
+extension ImagesListViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return photosName.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
+        
+        guard let imagesListCell = cell as? ImagesListCell else {
+            return UITableViewCell()
+        }
+        
+        configCell(for: imagesListCell, with: indexPath)
+        
+        return imagesListCell
+    }
+}
+
+// MARK: - UITableViewDelegate
 
 extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-          performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
