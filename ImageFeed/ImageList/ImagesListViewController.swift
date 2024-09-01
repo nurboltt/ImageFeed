@@ -15,6 +15,7 @@ final class ImagesListViewController: UIViewController {
     
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private let currentDate = Date()
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -58,7 +59,7 @@ private extension ImagesListViewController {
         }
         
         cell.cellImageView.image = image
-        cell.dateLabel.text = dateFormatter.string(from: Date())
+        cell.dateLabel.text = dateFormatter.string(from: currentDate)
         
         let isliked = indexPath.row % 2 == 0
         let likeImage = isliked ? UIImage(named: "like") : UIImage(named: "unlike")

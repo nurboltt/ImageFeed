@@ -7,8 +7,7 @@
 
 import UIKit
 
-private protocol OAuth2ServiceProtocol {
-    func makeOAuthTokenRequest(code: String) -> URLRequest
+protocol OAuth2ServiceProtocol {
     func fetchOAuthToken(code: String, completion: @escaping (Result<String,Error>) -> Void)
 }
 
@@ -40,15 +39,15 @@ final class OAuth2Service: OAuth2ServiceProtocol {
     
     func fetchOAuthToken(code: String, completion: @escaping (Result<String,Error>) -> Void) {
         let request = makeOAuthTokenRequest(code: code)
-        
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         let task = URLSession.shared.data(for: request) { result in
             
             switch result {
             case .success(let data):
                 do {
-                    let token = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                    let accessToken = token.accessToken
-                    completion(.success(accessToken))
+                    let responseBody = try decoder.decode(OAuthTokenResponseBody.self, from: data)
+                    completion(.success(responseBody.accessToken))
                 } catch {
                     print("Access token decode error: \(error.localizedDescription)")
                     completion(.failure(error))
