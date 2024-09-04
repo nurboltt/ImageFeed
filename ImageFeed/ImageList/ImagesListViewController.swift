@@ -8,11 +8,14 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController {
-
+    
     @IBOutlet private var tableView: UITableView!
+    
+    // MARK:  - Private Properties
     
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private let currentDate = Date()
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -46,6 +49,26 @@ final class ImagesListViewController: UIViewController {
     }
 }
 
+// MARK: Extension - ImagesListViewController
+
+private extension ImagesListViewController {
+    
+    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
+        guard let image = UIImage(named: photosName[indexPath.row]) else {
+            return
+        }
+        
+        cell.cellImageView.image = image
+        cell.dateLabel.text = dateFormatter.string(from: currentDate)
+        
+        let isliked = indexPath.row % 2 == 0
+        let likeImage = isliked ? UIImage(named: "like") : UIImage(named: "unlike")
+        cell.likeButton.setImage(likeImage, for: .normal)
+    }
+}
+
+// MARK: - UITableViewDataSource
+
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return photosName.count
@@ -62,30 +85,14 @@ extension ImagesListViewController: UITableViewDataSource {
         
         return imagesListCell
     }
-    
 }
 
-private extension ImagesListViewController {
-    
-    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let image = UIImage(named: photosName[indexPath.row]) else {
-            return
-        }
-        
-        cell.cellImageView.image = image
-        cell.dateLabel.text = dateFormatter.string(from: Date())
-        
-        let isliked = indexPath.row % 2 == 0
-        let likeImage = isliked ? UIImage(named: "like") : UIImage(named: "unlike")
-        cell.likeButton.setImage(likeImage, for: .normal)
-    }
-}
-
+// MARK: - UITableViewDelegate
 
 extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-          performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

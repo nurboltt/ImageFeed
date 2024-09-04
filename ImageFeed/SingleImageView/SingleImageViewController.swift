@@ -18,6 +18,8 @@ final class SingleImageViewController: UIViewController {
         }
     }
     
+    // MARK: - IBOutlets
+    
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var scrollView: UIScrollView!
     
@@ -31,6 +33,8 @@ final class SingleImageViewController: UIViewController {
         imageView.frame.size = image.size
         rescaleAndCenterImageInScrollView(image: image)
     }
+    
+    // MARK: - Private actions
     
     @IBAction private func didTapBackButton() {
         dismiss(animated: true, completion: nil)
@@ -61,6 +65,8 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
 }
+
+// MARK: - UIScrollViewDelegate
 
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
