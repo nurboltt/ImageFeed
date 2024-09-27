@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
     private let imageView: UIImageView = {
         let image = UIImage(named: "avatar")
         let view = UIImageView(image: image)
+        view.layer.cornerRadius = 34
+        view.clipsToBounds = true
         return view
     }()
     private let nameLabel: UILabel = {
@@ -41,9 +44,38 @@ final class ProfileViewController: UIViewController {
         return logoutButton
     }()
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
+        updateProfileDetails()
+        self.view.backgroundColor = UIColor(red: 26.0/255.0, green: 27.0/255.0, blue: 34.0/255.0, alpha: 1.0)
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
+    }
+    
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        imageView.kf.setImage(with: url)
+    }
+    
+    private func updateProfileDetails() {
+        nameLabel.text = ProfileService.shared.profile?.name
+        loginLabel.text = "@\(ProfileService.shared.profile?.name ?? "")"
+        descriptionLabel.text = ProfileService.shared.profile?.bio
     }
     
     private func setupConstraints() {

@@ -5,7 +5,7 @@
 //  Created by Nurbol on 28.08.2024.
 //
 
-import Foundation
+import UIKit
 
 struct OAuthTokenResponseBody: Decodable {
     let accessToken, tokenType, scope: String

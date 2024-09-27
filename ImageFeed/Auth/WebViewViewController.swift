@@ -16,6 +16,7 @@ protocol WebViewViewControllerDelegate: AnyObject {
 final class WebViewViewController: UIViewController {
     
     weak var delegate: WebViewViewControllerDelegate?
+    private var estimatedProgressObservation: NSKeyValueObservation?
     
     // MARK: IBOutlets
     
@@ -27,30 +28,50 @@ final class WebViewViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self else { return }
+                 self.updateProgress()
+             })
         webView.navigationDelegate = self
         loadAuthView()
+        setupBackButton()
         updateProgress()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
         updateProgress()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
-    }
-    
     // MARK: - Private Actions
+    
+    private func setupBackButton() {
+        let backButton = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(didTapBackButton(_:)))
+        backButton.image = UIImage(named: "nav_back_button")
+        backButton.tintColor = UIColor(red: 26.0/255.0, green: 27.0/255.0, blue: 34.0/255.0, alpha: 1.0)
+        navigationItem.leftBarButtonItem = backButton
+    }
     
     @IBAction private func didTapBackButton(_ sender: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
     }
     
     // MARK: - Private functions
+    
+    private func showAlert() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "OK", style: .default)
+        
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
     
     private func updateProgress() {
         progressView.progress = Float(webView.estimatedProgress)
@@ -101,6 +122,19 @@ extension WebViewViewController: WKNavigationDelegate {
             decisionHandler(.cancel)
         } else {
             decisionHandler(.allow)
+        }
+    }
+    
+    func webView(
+        _ webView: WKWebView,
+        didFinish navigation: WKNavigation!
+    ) {
+        webView.evaluateJavaScript("document.body.innerText") { (result, error) in
+            if let pageContent = result as? String {
+                if pageContent.contains("Invalid email or password.") {
+                    self.showAlert()
+                }
+            }
         }
     }
     

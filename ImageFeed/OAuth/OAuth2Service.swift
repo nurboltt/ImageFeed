@@ -11,14 +11,23 @@ protocol OAuth2ServiceProtocol {
     func fetchOAuthToken(code: String, completion: @escaping (Result<String,Error>) -> Void)
 }
 
+enum AuthServiceError: Error {
+    case invalidRequest
+}
+
 final class OAuth2Service: OAuth2ServiceProtocol {
     
     static let shared = OAuth2Service()
     private init() { }
     
-    func makeOAuthTokenRequest(code: String) -> URLRequest {
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    
+    func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard let baseURL = URL(string: "https://unsplash.com") else {
-            fatalError("Invalid baseUrl")
+            assertionFailure("Failed to create URL")
+            return nil
         }
         guard let url = URL(
             string: "/oauth/token"
@@ -36,27 +45,36 @@ final class OAuth2Service: OAuth2ServiceProtocol {
         return request
     }
     
-    
     func fetchOAuthToken(code: String, completion: @escaping (Result<String,Error>) -> Void) {
-        let request = makeOAuthTokenRequest(code: code)
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let task = URLSession.shared.data(for: request) { result in
-            
+        
+        assert(Thread.isMainThread)
+        guard lastCode != code else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            print("Invalid request")
+            return
+        }
+        
+        task?.cancel()
+        lastCode = code
+        
+        guard let request = makeOAuthTokenRequest(code: code) else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            print("Invalid request")
+            return
+        }
+    
+        let task = URLSession.shared.objectTask(for: request) { (result: Result<OAuthTokenResponseBody, Error>) in
             switch result {
-            case .success(let data):
-                do {
-                    let responseBody = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                    completion(.success(responseBody.accessToken))
-                } catch {
-                    print("Access token decode error: \(error.localizedDescription)")
-                    completion(.failure(error))
-                }
+            case .success(let responseBody):
+                completion(.success(responseBody.accessToken))
             case .failure(let error):
-                print("Network error: \(error)")
+                print("Access token decode error: \(error.localizedDescription)")
                 completion(.failure(error))
             }
+            self.task = nil
+            self.lastCode = nil
         }
+        self.task = task
         task.resume()
     }
 }
