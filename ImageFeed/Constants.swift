@@ -5,7 +5,7 @@
 //  Created by Nurbol on 22.08.2024.
 //
 
-import Foundation
+import UIKit
 
 enum Constants {
     static let accessKey = "9xCpz5XD2fWl6ypWzuAcI77oy5QIigF8C1be8v7hSTA"
@@ -14,7 +14,7 @@ enum Constants {
     static let accessScope = "public+read_user+write_likes"
     static let defaultBaseURL: URL = {
         guard let url = URL(string: "https://api.unsplash.com") else {
-            fatalError("Invalid URL")
+            fatalError("Invalid api URL")
         }
         return url
     }()

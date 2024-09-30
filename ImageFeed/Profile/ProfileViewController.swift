@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
     private let imageView: UIImageView = {
         let image = UIImage(named: "avatar")
         let view = UIImageView(image: image)
+        view.layer.cornerRadius = 34
+        view.clipsToBounds = true
         return view
     }()
     private let nameLabel: UILabel = {
@@ -24,7 +27,7 @@ final class ProfileViewController: UIViewController {
     private let loginLabel: UILabel = {
         let loginLabel = UILabel()
         loginLabel.text = "@ekaterina_nov"
-        loginLabel.textColor = UIColor(red: 174.0/255.0, green: 175.0/255.0, blue: 180.0/255.0, alpha: 1.0)
+        loginLabel.textColor = UIColor(named: "YP Gray")
         loginLabel.font = UIFont.systemFont(ofSize: 13)
         return loginLabel
     }()
@@ -41,9 +44,39 @@ final class ProfileViewController: UIViewController {
         return logoutButton
     }()
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
+        updateProfileDetails()
+        self.view.backgroundColor = UIColor(named: "YP Black")
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
+    }
+    
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(with: url)
+    }
+    
+    private func updateProfileDetails() {
+        nameLabel.text = ProfileService.shared.profile?.name
+        loginLabel.text = "@\(ProfileService.shared.profile?.name ?? "")"
+        descriptionLabel.text = ProfileService.shared.profile?.bio
     }
     
     private func setupConstraints() {

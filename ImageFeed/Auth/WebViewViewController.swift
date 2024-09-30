@@ -16,6 +16,7 @@ protocol WebViewViewControllerDelegate: AnyObject {
 final class WebViewViewController: UIViewController {
     
     weak var delegate: WebViewViewControllerDelegate?
+    private var estimatedProgressObservation: NSKeyValueObservation?
     
     // MARK: IBOutlets
     
@@ -27,24 +28,32 @@ final class WebViewViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self else { return }
+                 self.updateProgress()
+             })
         webView.navigationDelegate = self
         loadAuthView()
+        setupBackButton()
         updateProgress()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
         updateProgress()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
-    }
-    
     // MARK: - Private Actions
+    
+    private func setupBackButton() {
+        let backButton = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(didTapBackButton(_:)))
+        backButton.image = UIImage(named: "nav_back_button")
+        backButton.tintColor = UIColor(named: "YP Black")
+        navigationItem.leftBarButtonItem = backButton
+    }
     
     @IBAction private func didTapBackButton(_ sender: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
@@ -103,7 +112,7 @@ extension WebViewViewController: WKNavigationDelegate {
             decisionHandler(.allow)
         }
     }
-    
+        
     private func code(from navigationAction: WKNavigationAction) -> String? {
         if
             let url = navigationAction.request.url,

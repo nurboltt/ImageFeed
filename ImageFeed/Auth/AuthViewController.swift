@@ -18,7 +18,6 @@ final class AuthViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureBackButton()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -27,16 +26,12 @@ final class AuthViewController: UIViewController {
                 let webViewViewController = segue.destination as? WebViewViewController
             else { fatalError("Failed to prepare for \(showWebViewSegueIdentifier)") }
             webViewViewController.delegate = self
+            let navigationController = UINavigationController(rootViewController: webViewViewController)
+                    navigationController.modalPresentationStyle = .fullScreen
+                    present(navigationController, animated: true, completion: nil)
         } else {
             super.prepare(for: segue, sender: sender)
         }
-    }
-    
-    private func configureBackButton() {
-        navigationController?.navigationBar.backIndicatorImage = UIImage(named: "nav_back_button")
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "nav_back_button")
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem?.tintColor = UIColor(red: 26.0/255.0, green: 27.0/255.0, blue: 34.0/255.0, alpha: 1.0)
     }
 }
 
