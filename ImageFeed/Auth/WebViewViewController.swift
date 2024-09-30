@@ -51,7 +51,7 @@ final class WebViewViewController: UIViewController {
     private func setupBackButton() {
         let backButton = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(didTapBackButton(_:)))
         backButton.image = UIImage(named: "nav_back_button")
-        backButton.tintColor = UIColor(red: 26.0/255.0, green: 27.0/255.0, blue: 34.0/255.0, alpha: 1.0)
+        backButton.tintColor = UIColor(named: "YP Black")
         navigationItem.leftBarButtonItem = backButton
     }
     
@@ -60,18 +60,6 @@ final class WebViewViewController: UIViewController {
     }
     
     // MARK: - Private functions
-    
-    private func showAlert() {
-        let alert = UIAlertController(
-            title: "Что-то пошло не так",
-            message: "Не удалось войти в систему",
-            preferredStyle: .alert)
-        
-        let action = UIAlertAction(title: "OK", style: .default)
-        
-        alert.addAction(action)
-        present(alert, animated: true)
-    }
     
     private func updateProgress() {
         progressView.progress = Float(webView.estimatedProgress)
@@ -124,20 +112,7 @@ extension WebViewViewController: WKNavigationDelegate {
             decisionHandler(.allow)
         }
     }
-    
-    func webView(
-        _ webView: WKWebView,
-        didFinish navigation: WKNavigation!
-    ) {
-        webView.evaluateJavaScript("document.body.innerText") { (result, error) in
-            if let pageContent = result as? String {
-                if pageContent.contains("Invalid email or password.") {
-                    self.showAlert()
-                }
-            }
-        }
-    }
-    
+        
     private func code(from navigationAction: WKNavigationAction) -> String? {
         if
             let url = navigationAction.request.url,

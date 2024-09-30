@@ -6,19 +6,18 @@
 //
 
 import UIKit
-import ProgressHUD
-import SwiftKeychainWrapper
 
 final class SplashViewController: UIViewController {
     
     private let showAuthenticationScreenIdentifier = "showAuthenticationScreenIdentifier"
     private let oauth2Service = OAuth2Service.shared
     private let oauth2TokenStorage = OAuth2TokenStorage()
+    private var isAuthorized = false
     
     private lazy var splashImage: UIImageView = {
         let image = UIImage(named: "Vector")
         let imageView = UIImageView(image: image)
-        imageView.backgroundColor = UIColor(red: 26.0/255.0, green: 27/255.0, blue: 34.0/255.0, alpha: 1.0)
+        imageView.backgroundColor = UIColor(named: "YP Black")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         return imageView
@@ -29,16 +28,18 @@ final class SplashViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSplashImageConstraints()
+        view.backgroundColor = UIColor(named: "YP Black")
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+        guard !isAuthorized else { return }
         if oauth2TokenStorage.bearerToken != nil {
             switchToTabBarController()
         } else {
             createAuthViewController()
         }
+        isAuthorized = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -51,6 +52,18 @@ final class SplashViewController: UIViewController {
     }
     
     // MARK: Private functions
+    
+    private func showAlert() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "OK", style: .default)
+        
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
     
     private func setupSplashImageConstraints() {
         NSLayoutConstraint.activate([
@@ -92,15 +105,16 @@ extension SplashViewController {
     private func fetchOAuthToken(_ code: String) {
         UIBlockingProgressHUD.show()
         oauth2Service.fetchOAuthToken(code: code) { [weak self] result in
+
             UIBlockingProgressHUD.dismiss()
             guard let self else { return }
             
             switch result {
             case .success(let token):
                 self.oauth2TokenStorage.bearerToken = token
-                fetchProfile()
-                self.switchToTabBarController()
+                self.fetchProfile()
             case .failure(let error):
+                showAlert()
                 print("Failed fetch token \(error.localizedDescription)")
             }
         }
@@ -108,9 +122,9 @@ extension SplashViewController {
     
     private func fetchProfile() {
         UIBlockingProgressHUD.show()
-        ProfileService.shared.fetchProfile {  result in
-            
+        ProfileService.shared.fetchProfile { [weak self] result in
             UIBlockingProgressHUD.dismiss()
+            guard let self else { return }
             
             switch result {
             case .success(let profile):
@@ -123,7 +137,8 @@ extension SplashViewController {
     }
     
     private func fetchProfileImageURL(_ username: String) {
-        ProfileImageService.shared.fetchProfileImageURL(username: username) { result in
+        ProfileImageService.shared.fetchProfileImageURL(username: username) { [weak self ]result in
+            guard let self else { return }
             switch result {
             case .success(let imageUrl):
                 print(imageUrl)
@@ -139,8 +154,10 @@ extension SplashViewController {
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        vc.dismiss(animated: true)
-        UIBlockingProgressHUD.show()
-        self.fetchOAuthToken(code)
+        vc.presentingViewController?.dismiss(animated: true) { [weak self] in
+            guard let self else { return }
+            UIBlockingProgressHUD.show()
+            self.fetchOAuthToken(code)
+        }
     }
 }

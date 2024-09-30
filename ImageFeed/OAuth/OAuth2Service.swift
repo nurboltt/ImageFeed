@@ -63,7 +63,8 @@ final class OAuth2Service: OAuth2ServiceProtocol {
             return
         }
     
-        let task = URLSession.shared.objectTask(for: request) { (result: Result<OAuthTokenResponseBody, Error>) in
+        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            guard let self else { return }
             switch result {
             case .success(let responseBody):
                 completion(.success(responseBody.accessToken))

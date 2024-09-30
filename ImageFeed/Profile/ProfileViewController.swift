@@ -27,7 +27,7 @@ final class ProfileViewController: UIViewController {
     private let loginLabel: UILabel = {
         let loginLabel = UILabel()
         loginLabel.text = "@ekaterina_nov"
-        loginLabel.textColor = UIColor(red: 174.0/255.0, green: 175.0/255.0, blue: 180.0/255.0, alpha: 1.0)
+        loginLabel.textColor = UIColor(named: "YP Gray")
         loginLabel.font = UIFont.systemFont(ofSize: 13)
         return loginLabel
     }()
@@ -50,7 +50,7 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         setupConstraints()
         updateProfileDetails()
-        self.view.backgroundColor = UIColor(red: 26.0/255.0, green: 27.0/255.0, blue: 34.0/255.0, alpha: 1.0)
+        self.view.backgroundColor = UIColor(named: "YP Black")
         
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
@@ -69,6 +69,7 @@ final class ProfileViewController: UIViewController {
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
+        imageView.kf.indicatorType = .activity
         imageView.kf.setImage(with: url)
     }
     
