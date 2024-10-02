@@ -148,6 +148,19 @@ extension SplashViewController {
             print(result)
         }
     }
+    
+    private func fetchPhotosNextPage() {
+        ImageListService.shared.fetchPhotosNextPage() { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let photo):
+                print("@@@", photo)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+            print(result)
+        }
+    }
 }
 
 // MARK: - AuthViewControllerDelegate
