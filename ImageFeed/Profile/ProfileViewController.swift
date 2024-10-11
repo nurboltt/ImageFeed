@@ -38,14 +38,28 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.font = UIFont.systemFont(ofSize: 13)
         return descriptionLabel
     }()
-    private let logoutButton: UIButton = {
+    private lazy var logoutButton: UIButton = {
         let logoutButton = UIButton()
         logoutButton.setImage(UIImage(named: "logout"), for: .normal)
+        logoutButton.addTarget(self, action: #selector(logoutButtonTapped), for: .touchUpInside)
         return logoutButton
     }()
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
+    @objc private func logoutButtonTapped() {
+        let alert = UIAlertController(title: "Вы точно хотите выйти из аккаунта", message: "", preferredStyle: .alert)
+        let okButton = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
+            guard let self else { return }
+            ProfileLogoutService.shared.logout()
+        }
+        let cancelButton = UIAlertAction(title: "Нет", style: .default)
+        alert.addAction(okButton)
+        alert.addAction(cancelButton)
+        self.present(alert, animated: true)
+ 
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()

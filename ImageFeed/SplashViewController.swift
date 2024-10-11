@@ -138,7 +138,7 @@ extension SplashViewController {
     
     private func fetchProfileImageURL(_ username: String) {
         ProfileImageService.shared.fetchProfileImageURL(username: username) { [weak self ]result in
-            guard let self else { return }
+            guard self != nil else { return }
             switch result {
             case .success(let imageUrl):
                 print(imageUrl)
@@ -150,8 +150,8 @@ extension SplashViewController {
     }
     
     private func fetchPhotosNextPage() {
-        ImageListService.shared.fetchPhotosNextPage() { [weak self] result in
-            guard let self else { return }
+        ImagesListService.shared.fetchPhotosNextPage() { [weak self] result in
+            guard self != nil else { return }
             switch result {
             case .success(let photo):
                 print("@@@", photo)
