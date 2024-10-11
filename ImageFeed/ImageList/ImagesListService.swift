@@ -52,6 +52,11 @@ final class ImagesListService {
     }
     
     func fetchPhotosNextPage(completion: @escaping (Result<[Photo],Error>) -> Void) {
+        
+        if task != nil {
+            return
+        }
+        
         guard let token = tokenStorage.bearerToken else {
             completion(.failure(ImageListError.invalidToken))
             return

@@ -18,6 +18,13 @@ final class ImagesListViewController: UIViewController {
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private var photos: [Photo] = []
     private var photoImageServiceObserver: NSObjectProtocol?
+    private let inputFormatter = ISO8601DateFormatter()
+    private let outputFormatter: DateFormatter = {
+           let formatter = DateFormatter()
+           formatter.dateFormat = "dd MMMM yyyy"
+           formatter.locale = Locale(identifier: "ru_RU")
+           return formatter
+       }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,25 +70,18 @@ private extension ImagesListViewController {
         if let imageUrl = URL(string: photo.largeImageURL), let createdAt = photo.createdAt {
             cell.cellImageView.kf.indicatorType = .activity
             cell.cellImageView.kf.setImage(with: imageUrl, placeholder: UIImage(named: "Stub"))
-            cell.dateLabel.text = convertDateString(createdAt)
+            
+            if let date = inputFormatter.date(from: createdAt) {
+                cell.dateLabel.text = outputFormatter.string(from: date)
+            } else {
+                cell.dateLabel.text = nil
+            }
         }
         
         let likeImage = photo.isLiked ? UIImage(named: "like") : UIImage(named: "unlike")
         cell.likeButton.setImage(likeImage, for: .normal)
     }
-    
-    private func convertDateString(_ inputDate: String) -> String? {
-        let inputFormatter = ISO8601DateFormatter()
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "dd MMMM yyyy"
-        outputFormatter.locale = Locale(identifier: "ru_RU")
         
-        if let date = inputFormatter.date(from: inputDate) {
-            return outputFormatter.string(from: date)
-        }
-        return nil
-    }
-    
     private func updateTableViewAnimated() {
         let oldCount = photos.count
         let newCount = imagesListService.photos.count
@@ -161,7 +161,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
     
     func imagesListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let photo = photos[indexPath.row]
+        guard let photo = photos[safe: indexPath.row] else { return }
         
         UIBlockingProgressHUD.show()
         imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { result in
@@ -185,20 +185,11 @@ extension ImagesListViewController: ImagesListCellDelegate {
                     self.tableView.reloadRows(at: [indexPath], with: .automatic)
                     UIBlockingProgressHUD.dismiss()
                 case .failure:
-                    UIBlockingProgressHUD.dismiss()
                     let alert = UIAlertController(title: "Error", message: "Failed to update like status", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(alert, animated: true)
                 }
             }
         }
-    }
-}
-
-extension Array where Element == Photo {
-    func withReplaced(at index: Int, new photo: Photo) -> [Photo] {
-        var newArray = self
-        newArray[index] = photo
-        return newArray
     }
 }

@@ -150,8 +150,7 @@ extension SplashViewController {
     }
     
     private func fetchPhotosNextPage() {
-        ImagesListService.shared.fetchPhotosNextPage() { [weak self] result in
-            guard self != nil else { return }
+        ImagesListService.shared.fetchPhotosNextPage() { result in
             switch result {
             case .success(let photo):
                 print("@@@", photo)
