@@ -25,7 +25,7 @@ final class ProfileImageService {
     }
     
     func makeProfileImageRequest(username: String) -> URLRequest? {
-        guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else {
+        guard let url = URL(string: Constants.defaultBaseURLString + "/users/\(username)") else {
             assertionFailure("Failed to create URL")
             return nil
         }
@@ -63,5 +63,10 @@ final class ProfileImageService {
         }
         self.task = task
         task.resume()
+    }
+    
+    func clearProfileImage() {
+        avatarURL = nil
+        task = nil
     }
 }

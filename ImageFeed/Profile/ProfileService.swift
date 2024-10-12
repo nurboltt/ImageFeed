@@ -37,9 +37,8 @@ final class ProfileService: ProfileServiceProtocol  {
         }
     }
     
-    
     func makeProfileServiceRequest(token: String) -> URLRequest? {
-        guard let url = URL(string: "https://api.unsplash.com/me") else {
+        guard let url = URL(string: Constants.defaultBaseURLString + "/me") else {
             assertionFailure("Failed to create URL")
             return nil
         }
@@ -78,6 +77,11 @@ final class ProfileService: ProfileServiceProtocol  {
       
         self.task = task
         task.resume()
+    }
+    
+    func clearProfile() {
+        profile = nil
+        task = nil
     }
 }
 
