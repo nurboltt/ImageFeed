@@ -20,6 +20,7 @@ final class ProfileViewController: UIViewController {
     private let nameLabel: UILabel = {
         let nameLabel = UILabel()
         nameLabel.text = "Екатерина Новикова"
+        nameLabel.accessibilityIdentifier = "nameLabel"
         nameLabel.textColor = .white
         nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .semibold)
         return nameLabel
@@ -27,6 +28,7 @@ final class ProfileViewController: UIViewController {
     private let loginLabel: UILabel = {
         let loginLabel = UILabel()
         loginLabel.text = "@ekaterina_nov"
+        loginLabel.accessibilityIdentifier = "loginLabel"
         loginLabel.textColor = UIColor(named: "YP Gray")
         loginLabel.font = UIFont.systemFont(ofSize: 13)
         return loginLabel
@@ -42,6 +44,7 @@ final class ProfileViewController: UIViewController {
         let logoutButton = UIButton()
         logoutButton.setImage(UIImage(named: "logout"), for: .normal)
         logoutButton.addTarget(self, action: #selector(logoutButtonTapped), for: .touchUpInside)
+        logoutButton.accessibilityIdentifier = "logoutButton"
         return logoutButton
     }()
     
