@@ -8,7 +8,9 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController, ProfileViewProtocol {
+    
+    private var presenter: ProfileViewPresenterProtocol?
     
     private let imageView: UIImageView = {
         let image = UIImage(named: "avatar")
@@ -50,23 +52,13 @@ final class ProfileViewController: UIViewController {
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
-    @objc private func logoutButtonTapped() {
-        let alert = UIAlertController(title: "Вы точно хотите выйти из аккаунта", message: "", preferredStyle: .alert)
-        let okButton = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
-            guard let self else { return }
-            ProfileLogoutService.shared.logout()
-        }
-        let cancelButton = UIAlertAction(title: "Нет", style: .default)
-        alert.addAction(okButton)
-        alert.addAction(cancelButton)
-        self.present(alert, animated: true)
- 
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        let profileService = ProfileService.shared
+        let profileImageService = ProfileImageService.shared
+        presenter = ProfileViewPresenter(view: self, profileService: profileService, profileImageService: profileImageService)
+        presenter?.viewDidLoad()
         setupConstraints()
-        updateProfileDetails()
         self.view.backgroundColor = UIColor(named: "YP Black")
         
         profileImageServiceObserver = NotificationCenter.default
@@ -76,24 +68,34 @@ final class ProfileViewController: UIViewController {
                 queue: .main
             ) { [weak self] _ in
                 guard let self else { return }
-                self.updateAvatar()
             }
-        updateAvatar()
     }
     
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
+    func updateAvatar(with url: URL?) {
+        guard let url else { return }
         imageView.kf.indicatorType = .activity
         imageView.kf.setImage(with: url)
     }
     
-    private func updateProfileDetails() {
-        nameLabel.text = ProfileService.shared.profile?.name
-        loginLabel.text = "@\(ProfileService.shared.profile?.name ?? "")"
-        descriptionLabel.text = ProfileService.shared.profile?.bio
+    func showLogoutConfirmation() {
+        let alert = UIAlertController(title: "Вы точно хотите выйти из аккаунта", message: "", preferredStyle: .alert)
+        let okButton = UIAlertAction(title: "Да", style: .default) { _ in
+            ProfileLogoutService.shared.logout()
+        }
+        let cancelButton = UIAlertAction(title: "Нет", style: .default)
+        alert.addAction(okButton)
+        alert.addAction(cancelButton)
+        self.present(alert, animated: true)
+    }
+    
+    @objc private func logoutButtonTapped() {
+        presenter?.logoutButtonTapped()
+    }
+    
+    func updateProfileDetails(name: String?, login: String?, bio: String?) {
+        nameLabel.text = name
+        loginLabel.text = login
+        descriptionLabel.text = bio
     }
     
     private func setupConstraints() {
