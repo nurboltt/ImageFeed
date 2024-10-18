@@ -8,16 +8,16 @@
 import UIKit
 import Kingfisher
 
-final class SingleImageViewController: UIViewController {
+public final class SingleImageViewController: UIViewController {
     
-    var photo: Photo?
+    public var photo: Photo?
     
     // MARK: - IBOutlets
     
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var scrollView: UIScrollView!
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
@@ -69,7 +69,7 @@ final class SingleImageViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Не надо", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
             guard let self else { return }
-                self.loadImage()
+            self.loadImage()
         })
         
         present(alert, animated: true, completion: nil)
@@ -96,7 +96,7 @@ final class SingleImageViewController: UIViewController {
 // MARK: - UIScrollViewDelegate
 
 extension SingleImageViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
     }
 }

@@ -56,11 +56,10 @@ final class ImageFeedUITests: XCTestCase {
         
         let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
         
-        cellToLike.buttons["likeButton"].tap()
-        cellToLike.buttons["likeButton"].tap()
-        
         sleep(2)
-        
+        cellToLike.buttons["likeButton"].tap()
+        cellToLike.buttons["likeButton"].tap()
+                
         cellToLike.tap()
         
         sleep(2)
@@ -92,5 +91,4 @@ final class ImageFeedUITests: XCTestCase {
         app.alerts["Вы точно хотите выйти из аккаунта"].scrollViews.otherElements.buttons["Да"].tap()
         
     }
-    
 }

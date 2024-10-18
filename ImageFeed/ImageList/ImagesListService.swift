@@ -15,7 +15,7 @@ enum ImageListError: Error {
 
 final class ImagesListService {
     
-    private (set) var photos: [Photo] = []
+    var photos: [Photo] = []
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     private var task: URLSessionTask?
     private var likeTask: URLSessionTask?
