@@ -29,6 +29,12 @@ final class AuthViewController: UIViewController {
             let navigationController = UINavigationController(rootViewController: webViewViewController)
                     navigationController.modalPresentationStyle = .fullScreen
                     present(navigationController, animated: true, completion: nil)
+            
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
+            webViewViewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
         }

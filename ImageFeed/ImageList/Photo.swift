@@ -7,14 +7,24 @@
 
 import Foundation
 
-struct Photo: Decodable {
-    let id: String
-    let size: CGSize
-    let createdAt: String?
-    let welcomeDescription: String?
-    let thumbImageURL: String
-    let largeImageURL: String
-    var isLiked: Bool
+public struct Photo: Decodable {
+    public let id: String
+    public let size: CGSize
+    public let createdAt: String?
+    public let welcomeDescription: String?
+    public let thumbImageURL: String
+    public let largeImageURL: String
+    public var isLiked: Bool
+    
+    public init(id: String, size: CGSize, createdAt: String?, welcomeDescription: String?, thumbImageURL: String, largeImageURL: String, isLiked: Bool) {
+        self.id = id
+        self.size = size
+        self.createdAt = createdAt
+        self.welcomeDescription = welcomeDescription
+        self.thumbImageURL = thumbImageURL
+        self.largeImageURL = largeImageURL
+        self.isLiked = isLiked
+    }
 }
 
 extension Photo {
